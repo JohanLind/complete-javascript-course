@@ -74,3 +74,49 @@ const currencies = new Map([
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
+/* 
+const arr = ['a', 'b', 'c', 'd', 'e'];
+// Slice
+// Does not change the original
+console.log(arr.slice(2));
+console.log(arr.slice(2, 4));
+console.log(arr.slice(-2));
+// Callow copy
+console.log(arr.slice());
+
+// Splice
+// Do change (Mutate) the original array
+// Returns wats removed
+//console.log(arr.splice(2, 4));
+//console.log(arr.splice(-1)); // Removes the last element
+//console.log(arr);
+
+// Reverse, mutates the array
+console.log(arr.reverse());
+ */
+const arr = [23, 11, 64];
+console.log(arr[0]);
+console.log(arr.at(0));
+
+// getting the last element
+console.log(arr[arr.length - 1]);
+console.log(arr.slice(-1)[0]);
+console.log(arr.at(-1));
+
+// foreach
+movements.forEach(movement => {
+  if (movement > 0) {
+    console.log(`You deposited ${movement}`);
+  } else {
+    console.log(`You withdrew  ${Math.abs(movement)}`);
+  }
+});
+
+// Foreach using index
+movements.forEach((move, i) => {
+  if (move > 0) {
+    console.log(`Movement #${i} You deposited ${move}`);
+  } else {
+    console.log(`Movement #${i} You withdrew  ${Math.abs(move)}`);
+  }
+});
