@@ -9,6 +9,8 @@
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
+const baseUrl = 'https://restcountries.com/v2/';
+
 ///////////////////////////////////////
 
 // Old school http requests
@@ -47,10 +49,10 @@ getCountryData('usa');
 // Nested callbacks
 const renderCountry = function(data, className = '') {
     const html = `
-        <article class="country ${className}">
-            <img class="country__img" src="${data.flags.svg}" />
-            <div class="country__data">
-                <h3 class="country__name">${data.name}</h3>
+    <article class="country ${className}">
+    <img class="country__img" src="${data.flags.png}" />
+    <div class="country__data">
+    <h3 class="country__name">${data.name}</h3>
                 <h4 class="country__region">${data.region}</h4>
                 <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)} mn people</p>
                 <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
@@ -61,7 +63,7 @@ const renderCountry = function(data, className = '') {
     countriesContainer.insertAdjacentHTML('beforeEnd', html);
     countriesContainer.style.opacity = 1;
 }
-
+/*
 const getCountryAndNeighbour = function (country) {
     const request = new XMLHttpRequest();
     request.open('GET', `https://restcountries.com/v2/name/${country}`);
@@ -110,3 +112,44 @@ setTimeout(() => {
         }, 1000);
     }, 1000);
 }, 1000);
+ */
+
+// This is how we do http calls today; using promise
+// let url = baseUrl + 'name/sweden';
+// const request = fetch(url);
+// console.log(request);
+
+
+// const getCountryData = function (country) {
+//   fetch(`${baseUrl}/name/${country}`)
+//     .then(function (response) {
+//       console.log(response);
+//       return response.json();
+//     })
+//     .then(function (data) {
+//       console.log(data);
+//       renderCountry(data[0]);
+//     });
+// };
+
+const getCountryData = function (country) {
+  fetch(`${baseUrl}name/${country}`)
+    .then(response => response.json())
+    .then(data => {
+        renderCountry(data[0]);
+        const neighbour = data[0].borders?.[0];
+        return fetch(`${baseUrl}alpha/${neighbour}`);
+    })
+    .then(res => res.json())
+    .then(data => renderCountry(data, 'neighbour'));
+};
+
+getCountryData('sweden');
+//getCountryData('portugal');
+//getCountryData('spain');
+//getCountryData('mexico');
+//getCountryData('france');
+//getCountryData('denmark');
+//getCountryData('finland');
+
+
