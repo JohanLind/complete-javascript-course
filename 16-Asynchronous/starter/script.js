@@ -1,16 +1,37 @@
 'use strict';
 /* 
-    It's not a big deal, it's really just one small change. Instead of:
-    https://restcountries.eu/rest/v2/
-    It's now:
-    https://countries-api-836d.onrender.com/countries/
- */
+It's not a big deal, it's really just one small change. Instead of:
+https://restcountries.eu/rest/v2/
+It's now:
+https://countries-api-836d.onrender.com/countries/
+*/
 
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
 const baseUrl = 'https://restcountries.com/v2/';
 
+const renderCountry = function(data, className = '') {
+    const html = `
+    <article class="country ${className}">
+    <img class="country__img" src="${data.flags.png}" />
+    <div class="country__data">
+    <h3 class="country__name">${data.name}</h3>
+                <h4 class="country__region">${data.region}</h4>
+                <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)} mn people</p>
+                <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
+                <p class="country__row"><span>💰</span>${data.currencies[0].name}</p>
+            </div>
+        </article>
+        `;
+    countriesContainer.insertAdjacentHTML('beforeEnd', html);
+    //countriesContainer.style.opacity = 1;
+}
+
+const renderError = function(message) {
+    countriesContainer.insertAdjacentText('beforeend', message);t
+    //countriesContainer.style.opacity = 1;
+}
 ///////////////////////////////////////
 
 // Old school http requests
@@ -47,22 +68,6 @@ getCountryData('usa');
  */
 ///
 // Nested callbacks
-const renderCountry = function(data, className = '') {
-    const html = `
-    <article class="country ${className}">
-    <img class="country__img" src="${data.flags.png}" />
-    <div class="country__data">
-    <h3 class="country__name">${data.name}</h3>
-                <h4 class="country__region">${data.region}</h4>
-                <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)} mn people</p>
-                <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
-                <p class="country__row"><span>💰</span>${data.currencies[0].name}</p>
-            </div>
-        </article>
-        `;
-    countriesContainer.insertAdjacentHTML('beforeEnd', html);
-    countriesContainer.style.opacity = 1;
-}
 /*
 const getCountryAndNeighbour = function (country) {
     const request = new XMLHttpRequest();
@@ -136,15 +141,25 @@ const getCountryData = function (country) {
   fetch(`${baseUrl}name/${country}`)
     .then(response => response.json())
     .then(data => {
-        renderCountry(data[0]);
-        const neighbour = data[0].borders?.[0];
-        return fetch(`${baseUrl}alpha/${neighbour}`);
+      renderCountry(data[0]);
+      const neighbour = data[0].borders?.[0];
+      return fetch(`${baseUrl}alpha/${neighbour}`);
     })
     .then(res => res.json())
-    .then(data => renderCountry(data, 'neighbour'));
+    .then(data => renderCountry(data, 'neighbour'))
+    .catch(err => {
+        console.error(err)
+        renderError(`Something went wrong. ${err}`)
+    })
+    .finally(() =>{
+        countriesContainer.style.opacity = 1;
+    });
 };
 
-getCountryData('sweden');
+btn.addEventListener('click', function () {
+  getCountryData('sweden');
+});
+
 //getCountryData('portugal');
 //getCountryData('spain');
 //getCountryData('mexico');
