@@ -211,7 +211,7 @@ const getCountryData = function (country) {
 //getCountryData('denmark');
 //getCountryData('finland');
 
-
+/* 
 //////////////////
 //
 // Eventloop in practice
@@ -226,8 +226,65 @@ Promise.resolve('Resolved promise 2').then(res => {
 });
 
 console.log('test end');
+ */
+////////////////////////////
+//
+// Simple promise
+// Constructor takes a executor function
 
+const lotteryPromise = new Promise(function(resolve, reject) {
+  console.log('Time to draw the lucky winner.')
+  setTimeout(function () {
+    if(Math.random() >= 0.5){
+      resolve('You win dollars!!!')
+    } else {
+      reject(new Error('Good luck next time!'))
+    }
+  }, 2000);
+});
+lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
 
+// Promisifying setTimeout
+const wait = function(seconds) {
+  return new Promise(function(resolve) {
+    setTimeout(resolve, seconds * 1000)
+  });
+};
+
+wait(1)
+.then(() => {
+  console.log('1 second');
+  return wait(1);
+})
+.then(() => {
+  console.log('2 seconds');
+  return wait(1);
+})
+.then(() => {
+  console.log('3 seconds');
+  return wait(1);
+})
+.then(() => console.log('4 seconds'))
+
+// Compare this to the callback hell
+// setTimeout(() => {
+//   console.log('1 second')
+//   setTimeout(() => {
+//       console.log('2 second')
+//       setTimeout(() => {
+//           console.log('3 second')
+//           setTimeout(() => {
+//               console.log('4 second')
+//               setTimeout(() => {
+//                   console.log('5 second')
+//               }, 1000);
+//           }, 1000);
+//       }, 1000);
+//   }, 1000);
+// }, 1000);
+
+Promise.resolve('asdasd').then(x => console.log(x));
+Promise.reject(new Error('Problems!')).catch(x => console.error(x));
 
 ///////////////////////////////////////
 // Challenge 1
