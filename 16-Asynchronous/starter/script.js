@@ -5,7 +5,7 @@ https://restcountries.eu/rest/v2/
 It's now:
 https://countries-api-836d.onrender.com/countries/
 */
-
+/* 
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
@@ -31,7 +31,7 @@ const renderCountry = function(data, className = '') {
 const renderError = function (message) {
   countriesContainer.insertAdjacentText('beforeend', message);
   //countriesContainer.style.opacity = 1;
-};
+}; */
 ///////////////////////////////////////
 
 // Old school http requests
@@ -135,7 +135,7 @@ setTimeout(() => {
 //       renderCountry(data[0]);
 //     });
 // };
-
+/* 
 // Error message helper method
 // Returns Promise
 const getJSON = function (url, errorMessage = 'Something went wrong') {
@@ -150,6 +150,7 @@ const getJSON = function (url, errorMessage = 'Something went wrong') {
 const getCountryData = function (country) {
   getJSON(`${baseUrl}name/${country}`, 'Country not found.')
     .then(data => {
+      console.log('Xtra: ', data);
       renderCountry(data[0]);
       const neighbour = data[0].borders?.[0];
       console.log(neighbour);
@@ -165,7 +166,7 @@ const getCountryData = function (country) {
       countriesContainer.style.opacity = 1;
     });
 };
-
+ */
 /* 
 const getCountryData = function (country) {
   fetch(`${baseUrl}name/${country}`)
@@ -199,9 +200,9 @@ const getCountryData = function (country) {
 };
  */
 
-btn.addEventListener('click', function () {
-  getCountryData('australia');
-});
+// btn.addEventListener('click', function () {
+//   getCountryData('australia');
+// });
 
 //getCountryData('portugal');
 //getCountryData('spain');
@@ -211,3 +212,51 @@ btn.addEventListener('click', function () {
 //getCountryData('finland');
 
 
+//////////////////
+//
+// Eventloop in practice
+console.log('Test start')
+setTimeout(() => console.log('0 sec timer'), 0);
+
+Promise.resolve('Resolved promise 1').then(res => console.log(res));
+
+Promise.resolve('Resolved promise 2').then(res => {
+  for (let i = 0; i < 1000000000; i++){}
+  console.log(res)
+});
+
+console.log('test end');
+
+
+
+///////////////////////////////////////
+// Challenge 1
+/* 
+const whereAmI = function (lat, lng) {
+  fetch(`https://geocode.xyz/${lat},${lng}?json=1`)
+    .then(res => {
+        console.log('http status:', res.status);
+        if (!res.ok)  throw new Error(`Request went wrong, status ${res.status}`);
+        return res.json() // Returns a promise
+    })
+    .then(data => { // unpack the promise to get response data
+        console.log(data.country);
+        console.log(data);
+    })
+    .catch(err => console.error(err))
+    .finally(console.log('done'));
+};
+whereAmI(52.508, 13.381);
+
+ */
+
+
+// const getCountry = function (country) {
+//   fetch(`https://restcountries.com/v2/name/${country}`)
+//     .then(res => res.json())
+//     .then(data => {
+//       console.log(data);
+//     });
+// };
+
+// getCountry('sweden');
