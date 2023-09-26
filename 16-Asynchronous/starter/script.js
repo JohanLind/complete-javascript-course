@@ -5,9 +5,9 @@ https://restcountries.eu/rest/v2/
 It's now:
 https://countries-api-836d.onrender.com/countries/
 */
-/* 
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
+/* 
 
 const baseUrl = 'https://restcountries.com/v2/';
 
@@ -231,7 +231,7 @@ console.log('test end');
 //
 // Simple promise
 // Constructor takes a executor function
-
+/* 
 const lotteryPromise = new Promise(function(resolve, reject) {
   console.log('Time to draw the lucky winner.')
   setTimeout(function () {
@@ -285,6 +285,54 @@ wait(1)
 
 Promise.resolve('asdasd').then(x => console.log(x));
 Promise.reject(new Error('Problems!')).catch(x => console.error(x));
+ */
+
+///////////////////////
+//
+// Promisifying the Geolocation API
+
+
+//console.log('Getting position...')
+
+const getPosition = function() {
+  return new Promise(function(resolve, reject) {
+    // navigator.geolocation.getCurrentPosition(
+    //   position => resolve(position),
+    //   err => reject(err)
+    //   );
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+//getPosition().then(pos => console.log(pos));
+
+const whereAmI = function () {
+  console.log('In whereAmI');
+  getPosition().then(pos => {
+    const {latitude: lat, longitude: lng} = pos.coords;
+
+    return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+  })
+  .then(res => {
+      if (!res.ok) throw new Error(`Problem with geocoding ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      console.log(data);
+      console.log(`You are in ${data.city}, ${data.country}`);
+
+      return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
+    })
+    .then(res => {
+      if (!res.ok) throw new Error(`Country not found (${res.status})`);
+
+      return res.json();
+    })
+    .then(data => renderCountry(data[0]))
+    .catch(err => console.error(`${err.message} 💥`));
+};
+
+btn.addEventListener('click', whereAmI);
 
 ///////////////////////////////////////
 // Challenge 1
